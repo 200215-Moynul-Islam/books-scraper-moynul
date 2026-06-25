@@ -85,3 +85,15 @@ DOWNLOAD_DELAY = 1
 
 # Set settings whose default value is deprecated to a future-proof value
 FEED_EXPORT_ENCODING = "utf-8"
+FEEDS = {
+    "output/books.json": {
+        "format": "json",
+        "indent": 4,
+    },
+    "output/books.csv": {
+        "format": "csv",
+    },
+    "output/books.xml": {
+        "format": "xml",
+    },
+}
