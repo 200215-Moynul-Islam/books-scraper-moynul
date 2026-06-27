@@ -58,9 +58,10 @@ DOWNLOAD_DELAY = 1
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "books_scraper.pipelines.BooksScraperPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    "books_scraper.pipelines.CleanBookDataPipeline": 100,
+    "books_scraper.pipelines.SQLitePipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -97,3 +98,5 @@ FEEDS = {
         "format": "xml",
     },
 }
+
+DATABASE_NAME = "books.db"
