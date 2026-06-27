@@ -1,0 +1,10 @@
+venv
+.git
+.gitignore
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.db
+logs
+output
