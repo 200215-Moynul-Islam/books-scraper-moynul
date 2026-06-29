@@ -1,4 +1,4 @@
-# Books Scraper
+# Books Scraper – Enterprise Web Scraping Pipeline
 
 A production-ready Scrapy application that scrapes book data from [books.toscrape.com](https://books.toscrape.com), processes it through a pipeline, exports it in multiple formats, and stores it in SQLite — fully containerized with Docker and deployable via Scrapyd.
 
@@ -71,7 +71,7 @@ git clone https://github.com/200215-Moynul-Islam/books-scraper-moynul.git
 cd books-scraper-moynul
 
 # Create and activate a virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 
 # Install dependencies
@@ -82,10 +82,10 @@ pip install -r requirements.txt
 
 ## Environment Setup
 
-By default, the database is named `books.db`. To use a different name, update `DATABASE_NAME` in `.env`:
+By default, the database is named `books.db`. To use a different name, update `DATABASE_NAME` in `settings.py`:
 
-```env
-DATABASE_NAME=books.db
+```python
+DATABASE_NAME = "books.db"
 ```
 
 Output file paths are configured in `settings.py` under `FEEDS`. By default, files are exported to the `output/` directory. To change the paths or formats, update the `FEEDS` dictionary:
@@ -141,23 +141,27 @@ Scrapyd will be running and accessible at `http://localhost:6800`.
 
 ## Scrapyd Deployment Guide
 
-Scrapyd is a service for running Scrapy spiders. Once the container is running, deploy and trigger the spider via its HTTP API.
+Scrapyd is a service for running Scrapy spiders. The spider can be deployed and executed via the Scrapyd API either with or without Docker.
 
-### 1. Deploy the project egg
+### Without Docker
 
 ```bash
+# Start Scrapyd in a separate terminal
+scrapyd
+
+# Deploy the project
 scrapyd-deploy
 ```
 
-This packages the project and deploys it to the Scrapyd instance at `http://localhost:6800` (configured in `scrapy.cfg`).
+### With Docker
 
-> If deploying from inside the Docker container, run this command from within the container:
->
-> ```bash
-> docker exec -it books-scraper scrapyd-deploy
-> ```
+Ensure the Docker container is running (see [Docker Setup Guide](#docker-setup-guide)), then deploy from within the container:
 
-### 2. Schedule a crawl via the API
+```bash
+docker exec -it books-scraper scrapyd-deploy
+```
+
+### 1. Schedule a crawl via the API
 
 ```bash
 curl http://localhost:6800/schedule.json \
@@ -165,17 +169,27 @@ curl http://localhost:6800/schedule.json \
   -d spider=books
 ```
 
-### 3. Check job status
+### 2. Check job status
 
 ```bash
 curl http://localhost:6800/listjobs.json?project=books_scraper
 ```
 
-### 4. View running spiders
+### 3. View running spiders
 
 ```bash
 curl http://localhost:6800/daemonstatus.json
 ```
+
+### Browser Access
+
+Scrapyd also provides a web UI. Once running, open your browser and navigate to:
+
+```
+http://localhost:6800
+```
+
+From there you can view scheduled, running, and finished jobs.
 
 ### Scrapyd configuration (`scrapyd.conf`)
 
